@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:products_app/constants/app_color.dart';
-import 'package:products_app/views/index/index.dart';
+import 'package:thuethietbi/constants/app_color.dart';
+import 'package:thuethietbi/views/index/index.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:products_app/constants/app_color.dart';
+import 'package:thuethietbi/constants/app_color.dart';
 
 class HomeNavigationBar extends StatefulWidget {
   const HomeNavigationBar({

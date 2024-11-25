@@ -4,38 +4,36 @@ import 'package:thuethietbi/constants/app_color.dart';
 
 import 'package:thuethietbi/model/caterogies_model.dart';
 
-class FilterOptionsByCate {
+class FilterOptionsChildCate {
   final String title;
   final List<Categories> options;
 
-  FilterOptionsByCate({
+  FilterOptionsChildCate({
     required this.title,
     required this.options,
   });
 }
 
-class FilterButtonByCate extends StatefulWidget {
+class FiltterButtonChildCate extends StatefulWidget {
   final String nameFilter;
   final Map<String, String> selectedOptions;
   final IconData icon;
-  final List<FilterOptionsByCate> filterOptions;
+  final List<FilterOptionsChildCate> filterOptions;
   final void Function(String, String) onOptionSelected;
-  final bool isSelectedFromMenu;
-  FilterButtonByCate(
-      {Key? key,
-      required this.icon,
-      required this.nameFilter,
-      required this.selectedOptions,
-      required this.filterOptions,
-      required this.onOptionSelected,
-      this.isSelectedFromMenu = false})
-      : super(key: key);
+  FiltterButtonChildCate({
+    Key? key,
+    required this.icon,
+    required this.nameFilter,
+    required this.selectedOptions,
+    required this.filterOptions,
+    required this.onOptionSelected,
+  }) : super(key: key);
 
   @override
-  _FilterButtonByCateState createState() => _FilterButtonByCateState();
+  _FiltterButtonChildCateState createState() => _FiltterButtonChildCateState();
 }
 
-class _FilterButtonByCateState extends State<FilterButtonByCate> {
+class _FiltterButtonChildCateState extends State<FiltterButtonChildCate> {
   bool isSelected = false;
   @override
   void initState() {
@@ -46,10 +44,10 @@ class _FilterButtonByCateState extends State<FilterButtonByCate> {
     ;
   }
 
-  void didUpdateWidget(FilterButtonByCate oldWidget) {
+  void didUpdateWidget(FiltterButtonChildCate oldWidget) {
     super.didUpdateWidget(oldWidget);
-    isSelected = widget.selectedOptions.values
-        .any((value) => (value != 'Loại sản phẩm'));
+    isSelected =
+        widget.selectedOptions.values.any((value) => (value != 'Hạng mục'));
   }
 
   @override
@@ -82,9 +80,7 @@ class _FilterButtonByCateState extends State<FilterButtonByCate> {
               }),
               foregroundColor: MaterialStateProperty.resolveWith<Color>(
                   (Set<MaterialState> states) {
-                return isSelected || widget.isSelectedFromMenu
-                    ? Colors.white
-                    : Colors.black;
+                return Colors.white;
               }),
               backgroundColor: MaterialStateProperty.resolveWith<Color>(
                   (Set<MaterialState> states) {

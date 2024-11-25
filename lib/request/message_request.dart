@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
-import 'package:products_app/constants/api.dart';
-import 'package:products_app/model/message_model.dart';
-import 'package:products_app/services/api_services.dart';
+import 'package:thuethietbi/constants/api.dart';
+import 'package:thuethietbi/model/message_model.dart';
+import 'package:thuethietbi/services/api_services.dart';
 
 class MessageRequest {
   final Dio dio = Dio();

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:products_app/base/base.page.dart';
-import 'package:products_app/base/nav_bar.page.dart';
-import 'package:products_app/viewmodel/index.vm.dart';
+import 'package:thuethietbi/base/base.page.dart';
+import 'package:thuethietbi/base/nav_bar.page.dart';
+import 'package:thuethietbi/viewmodel/index.vm.dart';
 
 import 'package:stacked/stacked.dart';
 

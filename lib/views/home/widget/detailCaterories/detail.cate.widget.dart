@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:products_app/base/base.page.dart';
-import 'package:products_app/constants/app_color.dart';
-import 'package:products_app/constants/app_fontsize.dart';
-import 'package:products_app/viewmodel/categories.vm.dart';
-import 'package:products_app/viewmodel/index.vm.dart';
-import 'package:products_app/viewmodel/product.vm.dart';
-import 'package:products_app/views/home/widget/detailCaterories/widget/fillter.widget.dart';
-import 'package:products_app/views/home/widget/detailCaterories/widget/fliter.location.widget.dart';
-import 'package:products_app/views/home/widget/detailCaterories/widget/list.item.cate.widget.dart';
-import 'package:products_app/views/view_product/widget/listview/item.product.dart';
+import 'package:thuethietbi/base/base.page.dart';
+import 'package:thuethietbi/constants/app_color.dart';
+import 'package:thuethietbi/constants/app_fontsize.dart';
+import 'package:thuethietbi/viewmodel/categories.vm.dart';
+import 'package:thuethietbi/viewmodel/index.vm.dart';
+import 'package:thuethietbi/viewmodel/product.vm.dart';
+import 'package:thuethietbi/views/home/widget/detailCaterories/widget/cate_child/filter.dart';
+import 'package:thuethietbi/views/home/widget/detailCaterories/widget/cate_child/list.dart';
+import 'package:thuethietbi/views/home/widget/detailCaterories/widget/fillter.widget.dart';
+import 'package:thuethietbi/views/home/widget/detailCaterories/widget/fliter.location.widget.dart';
+import 'package:thuethietbi/views/home/widget/detailCaterories/widget/list.item.cate.widget.dart';
+import 'package:thuethietbi/views/view_product/widget/listview/item.product.dart';
 import 'package:stacked/stacked.dart';
 
 class ViewProductByCate extends StatefulWidget {
@@ -32,15 +34,50 @@ class _ViewProductByCateState extends State<ViewProductByCate> {
   bool _isScrollToTopButtonVisible = false;
   bool isSelectedFromMenu = false;
   bool isCategoryListVisible = true;
-  // bool isAllSelectedCategory = false;
-  // bool isAllSelectedLocation = false;
+  bool isSelectedChildCate = false;
   bool isLocationListVisible = true;
   Map<String, String> _selectedOptions = {
     'Khu vực': 'Toàn quốc',
     'Loại sản phẩm': 'Tất cả',
+    'Hạng mục': 'Tất cả'
   };
   String _selectedCategoryId = '';
   String _selectedCityId = '';
+  // String _selectedCategoryChildId = '';
+  int? idCha;
+  void _handleOptionSelectedChildCate(String filterType, String option) {
+    setState(() {
+      _selectedOptions[filterType] = option;
+
+      if (option == "Tất cả" || option.isEmpty) {
+        isSelectedChildCate = true;
+        _selectedCategoryId = '';
+        widget.productViewModel.getFilterProducts(0, _selectedCityId).then((_) {
+          setState(() {});
+        });
+      } else {
+        isSelectedChildCate = false;
+        final selectedChildCategory = widget
+            .indexViewModel.categoriesViewModel.lstCateChild
+            .firstWhere((child) => child.name == option);
+        idCha = widget.productViewModel.idCha;
+        if (selectedChildCategory != null) {
+          _selectedCategoryId = selectedChildCategory.id.toString();
+        }
+      }
+    });
+    if (_selectedCategoryId.isNotEmpty) {
+      int selectedChildId = int.tryParse(_selectedCategoryId) ?? 0;
+      widget.productViewModel
+          .getFilterProducts(selectedChildId, _selectedCityId)
+          .then((_) {
+        setState(() {
+          print(
+              'Chọn danh mục với idDanhMuc là: ${selectedChildId} và idCity: ${_selectedCityId}');
+        });
+      });
+    }
+  }
 
   void _handleOptionSelected(String filterType, String option) {
     setState(() {
@@ -48,21 +85,55 @@ class _ViewProductByCateState extends State<ViewProductByCate> {
     });
 
     if (filterType == 'Khu vực') {
+      // Xử lý khi chọn khu vực
       if (option == "Toàn quốc") {
         isLocationListVisible = true;
         _selectedCityId = '';
       } else {
         isLocationListVisible = false;
+
         final selectedLocation = widget
             .indexViewModel.locationViewModel.lstLocation
             .firstWhere((location) => location.name == option);
+        print('ID Cha hiện tại: ${widget.productViewModel.idCha}');
         _selectedCityId = selectedLocation.id;
+
+        if (widget.productViewModel.idCha != 0) {
+          widget.productViewModel
+              .getFilterProducts(
+                  widget.productViewModel.idCha ?? 0, _selectedCityId)
+              .then((_) {
+            setState(() {
+              print('ID Cha hiện tại: ${widget.productViewModel.idCha}');
+            });
+          });
+        } else {
+          widget.productViewModel
+              .getFilterProducts(0, _selectedCityId)
+              .then((_) {
+            setState(() {});
+          });
+        }
       }
     } else if (filterType == 'Loại sản phẩm') {
       if (option == "Tất cả" || option.isEmpty) {
         isCategoryListVisible = true;
         _selectedCategoryId = '';
-        widget.productViewModel.lstFilterProduct.clear();
+        isSelectedChildCate = false;
+        if (_selectedCityId.isNotEmpty) {
+          widget.productViewModel
+              .getFilterProducts(0, _selectedCityId)
+              .then((_) {
+            setState(() {});
+          });
+        } else {
+          widget.productViewModel.getFilterProducts(0, '').then((_) {
+            setState(() {});
+          });
+        }
+
+        // Ẩn danh mục cons
+        widget.indexViewModel.categoriesViewModel.lstCateChild.clear();
       } else {
         isCategoryListVisible = false;
 
@@ -70,31 +141,45 @@ class _ViewProductByCateState extends State<ViewProductByCate> {
             .indexViewModel.categoriesViewModel.lstCate
             .firstWhere((category) => category.name == option);
 
-        _selectedCategoryId = selectedCategory.id.toString(); // Lưu ID danh mục
-        int selectedIdCate = int.tryParse(_selectedCategoryId) ?? 0;
-        widget.productViewModel.getFilterProducts(selectedIdCate, '').then((_) {
+        _selectedCategoryId = selectedCategory.id.toString();
+        widget.productViewModel.idCha = selectedCategory.id;
+        widget.indexViewModel.categoriesViewModel
+            .loadCategoriesChild(selectedCategory.id ?? 0)
+            .then((_) {
+          setState(() {
+            isSelectedChildCate = widget
+                .indexViewModel.categoriesViewModel.lstCateChild.isNotEmpty;
+          });
+        });
+
+        // Lọc sản phẩm theo danh mục cha
+        widget.productViewModel
+            .getFilterProducts(selectedCategory.id ?? 0, '')
+            .then((_) {
           setState(() {});
         });
+
+        isSelectedChildCate = true;
       }
     }
+
     int selectedIdCate = int.tryParse(_selectedCategoryId) ?? 0;
+
     if (isCategoryListVisible && isLocationListVisible) {
       widget.productViewModel.getFilterProducts(0, '').then((_) {
-        setState(() {});
-      });
-    } else if (isCategoryListVisible && !isLocationListVisible) {
-      widget.productViewModel.getFilterProducts(0, _selectedCityId).then((_) {
         setState(() {});
       });
     } else if (!isCategoryListVisible && isLocationListVisible) {
       widget.productViewModel.getFilterProducts(selectedIdCate, '').then((_) {
         setState(() {});
       });
-    } else {
+    } else if (!isCategoryListVisible && !isLocationListVisible) {
       widget.productViewModel
           .getFilterProducts(selectedIdCate, _selectedCityId)
           .then((_) {
-        setState(() {});
+        setState(() {
+          print('ID Cha hiện tại: ${widget.productViewModel.idCha}');
+        });
       });
     }
   }
@@ -119,7 +204,9 @@ class _ViewProductByCateState extends State<ViewProductByCate> {
     _searchController.addListener(() {
       _onSearchChanged();
     });
+    _selectedCategoryId = widget.categoryId.toString();
     print("Category ID: ${widget.categoryId}");
+    print("Category ID page: $_selectedCategoryId");
     if (widget.categoryId > 0) {
       _selectedOptions['Loại sản phẩm'] = widget
               .indexViewModel.categoriesViewModel.lstCate
@@ -173,8 +260,7 @@ class _ViewProductByCateState extends State<ViewProductByCate> {
   Future<void> _refreshData() async {
     int selectedIdCate = int.tryParse(_selectedCategoryId) ?? 0;
     String cityId = _selectedCityId;
-
-    await widget.productViewModel.getFilterProductView(selectedIdCate, cityId);
+    await widget.productViewModel.getFilterProducts(selectedIdCate, cityId);
     await widget.indexViewModel.categoriesViewModel.loadCategories();
     await widget.indexViewModel.locationViewModel.loadLocations();
     setState(() {});
@@ -211,7 +297,9 @@ class _ViewProductByCateState extends State<ViewProductByCate> {
           onViewModelReady: (viewModel) async {
             viewModel.viewContext = context;
             await viewModel.locationViewModel.loadLocations();
-            await viewModel.categoriesViewModel.loadCategories();
+
+            await viewModel.categoriesViewModel
+                .loadCategoriesChild(widget.categoryId);
             widget.productViewModel
                 .setCategories(viewModel.categoriesViewModel.lstCate);
           },
@@ -333,6 +421,23 @@ class _ViewProductByCateState extends State<ViewProductByCate> {
                             onOptionSelected: _handleOptionSelected,
                             isSelectedFromMenu: isSelectedFromMenu,
                           ),
+                          if (widget.indexViewModel.categoriesViewModel
+                              .lstCateChild.isNotEmpty)
+                            FiltterButtonChildCate(
+                              selectedOptions: {
+                                'Hạng mục': _selectedOptions['Hạng mục']!,
+                              },
+                              icon: Icons.filter_alt_outlined,
+                              nameFilter: 'Hạng mục',
+                              filterOptions: [
+                                FilterOptionsChildCate(
+                                  title: 'Hạng mục',
+                                  options: widget.indexViewModel
+                                      .categoriesViewModel.lstCateChild,
+                                ),
+                              ],
+                              onOptionSelected: _handleOptionSelectedChildCate,
+                            ),
                           SizedBox(
                             height: 10,
                           ),
@@ -341,8 +446,23 @@ class _ViewProductByCateState extends State<ViewProductByCate> {
                             ListItemWidget(
                               cateViewModel:
                                   widget.indexViewModel.categoriesViewModel,
-                              onOptionSelected: _handleOptionSelected,
+                              onOptionSelected: (filterType, option) {
+                                _handleOptionSelected(filterType, option);
+                                if (option == 'Tất cả') {
+                                  setState(() {
+                                    isSelectedChildCate = true;
+                                  });
+                                }
+                              },
                             ),
+                          if (isSelectedChildCate &&
+                              _selectedOptions['Loại sản phẩm'] != 'Tất cả')
+                            ListItemChildCate(
+                                productViewModel: widget.productViewModel,
+                                cateViewModel:
+                                    widget.indexViewModel.categoriesViewModel,
+                                onOptionSelected:
+                                    _handleOptionSelectedChildCate),
                           SizedBox(
                             height: 5,
                           ),
@@ -420,16 +540,6 @@ class _ViewProductByCateState extends State<ViewProductByCate> {
                           (context, index) {
                             return ItemProductList(
                                 onTap: () {
-                                  // if (isCategoryListVisible &&
-                                  //     isLocationListVisible) {
-                                  //   widget.productViewModel.detailProducts =
-                                  //       widget.productViewModel
-                                  //           .lstFilterProductAll[index];
-                                  //   viewModel.productViewModel.viewContext =
-                                  //       context;
-                                  //   widget.productViewModel
-                                  //       .nextDetailProduct();
-                                  // } else {
                                   widget.productViewModel.detailProducts =
                                       widget.productViewModel.searchData[index];
                                   viewModel.productViewModel.viewContext =
@@ -439,19 +549,9 @@ class _ViewProductByCateState extends State<ViewProductByCate> {
                                 },
                                 productViewModel: widget.productViewModel,
                                 data:
-                                    // isCategoryListVisible &&
-                                    //         isLocationListVisible
-                                    //     ? widget.productViewModel
-                                    //         .lstFilterProductAll[index]
-                                    //     :
                                     widget.productViewModel.searchData[index]);
                           },
-                          childCount:
-                              // isCategoryListVisible && isLocationListVisible
-                              //     ? widget.productViewModel
-                              //         .lstFilterProductAll.length
-                              //     :
-                              widget.productViewModel.searchData.length,
+                          childCount: widget.productViewModel.searchData.length,
                         ),
                       ),
                     if (widget.productViewModel.searchData.length == 1 ||
@@ -485,13 +585,13 @@ class _ViewProductByCateState extends State<ViewProductByCate> {
     return Positioned(
       left: 20,
       right: 20,
-      top: 100, // Vị trí bên dưới `TextField`
+      top: 100,
       child: Material(
         borderRadius: BorderRadius.circular(8),
         color: Colors.white,
         elevation: 4.0,
         child: ListView.builder(
-          padding: EdgeInsets.zero, // Bỏ padding của ListView
+          padding: EdgeInsets.zero,
           shrinkWrap: true,
           itemCount: widget.productViewModel.suggestions.length,
           itemBuilder: (context, index) {

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:products_app/constants/app_color.dart';
-import 'package:products_app/constants/app_fontsize.dart';
-import 'package:products_app/model/location.model.dart';
+import 'package:thuethietbi/constants/app_color.dart';
+import 'package:thuethietbi/constants/app_fontsize.dart';
+import 'package:thuethietbi/model/location.model.dart';
 
 class FilterOptionLocation {
   final String title;
@@ -37,7 +37,6 @@ class FliterButtonLocation extends StatefulWidget {
 class _FliterButtonLocationState extends State<FliterButtonLocation> {
   bool isSelected = false;
   List<String> selectedIds = ['79', '01', '48'];
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -214,6 +213,7 @@ class _FliterButtonLocationState extends State<FliterButtonLocation> {
                                     ElevatedButton(
                                       onPressed: () {
                                         showModalBottomSheet(
+                                          backgroundColor: AppColor.extraColor,
                                           context: context,
                                           isScrollControlled: true,
                                           shape: RoundedRectangleBorder(
@@ -223,8 +223,7 @@ class _FliterButtonLocationState extends State<FliterButtonLocation> {
                                           ),
                                           builder: (BuildContext context) {
                                             return FractionallySizedBox(
-                                              heightFactor:
-                                                  0.8, // Chiều cao của BottomSheet (50% màn hình)
+                                              heightFactor: 0.8,
                                               child: Container(
                                                 padding: EdgeInsets.all(16.0),
                                                 child: SingleChildScrollView(
@@ -240,6 +239,28 @@ class _FliterButtonLocationState extends State<FliterButtonLocation> {
                                                           ),
                                                         ),
                                                       ),
+                                                      // SizedBox(height: 10),
+                                                      // TextField(
+                                                      //   decoration:
+                                                      //       InputDecoration(
+                                                      //     prefixIcon: Icon(
+                                                      //       Icons.search,
+                                                      //       color: AppColor
+                                                      //           .darkColor,
+                                                      //     ),
+                                                      //     hintText:
+                                                      //         'Tìm kiếm khu vực',
+                                                      //     border: OutlineInputBorder(
+                                                      //         borderRadius:
+                                                      //             BorderRadius
+                                                      //                 .circular(
+                                                      //                     10)),
+                                                      //   ),
+                                                      //   onChanged: (text) {
+                                                      //     print(
+                                                      //         "Text changed: $text");
+                                                      //   },
+                                                      // ),
                                                       SizedBox(height: 10),
                                                       Column(
                                                         crossAxisAlignment:

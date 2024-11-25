@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
-import 'package:products_app/constants/api.dart';
-import 'package:products_app/model/products.model.dart';
-import 'package:products_app/services/api_services.dart';
+import 'package:thuethietbi/constants/api.dart';
+import 'package:thuethietbi/model/products.model.dart';
+import 'package:thuethietbi/services/api_services.dart';
 
 class ProductRequest {
   final Dio dio = Dio();
@@ -31,6 +31,26 @@ class ProductRequest {
     try {
       final response = await ApiService().getRequest(
           '${API.HOST_API}${API.PRODUCT_BY_CATEGORY}?idDanhMuc=${id}',
+          queryParams: {'idDanhMuc': id});
+
+      if (response.statusCode == API.CODE) {
+        List<dynamic> data = response.data;
+        lstProducts = data.map((json) => Products.fromJson(json)).toList();
+      } else {
+        throw Exception('Failed to load Products');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+    return lstProducts;
+  }
+
+//Danh muc con
+  Future<List<Products>> getProductsByCategoryChild(int id) async {
+    List<Products> lstProducts = [];
+    try {
+      final response = await ApiService().getRequest(
+          '${API.HOST_API}${API.PRODUCT_BY_CATEGORY_CHILD}?idDanhMuc=${id}',
           queryParams: {'idDanhMuc': id});
 
       if (response.statusCode == API.CODE) {

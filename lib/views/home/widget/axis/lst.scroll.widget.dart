@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:products_app/model/products.model.dart';
-import 'package:products_app/viewmodel/product.vm.dart';
-import 'package:products_app/views/home/widget/item.product.widget.dart';
+import 'package:thuethietbi/model/products.model.dart';
+import 'package:thuethietbi/viewmodel/product.vm.dart';
+import 'package:thuethietbi/views/home/widget/item.product.widget.dart';
 
 class LstProductScroll extends StatefulWidget {
   final ProductViewModel productViewModel;

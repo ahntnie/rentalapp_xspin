@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
-import 'package:products_app/base/base.page.dart';
-import 'package:products_app/constants/api.dart';
-import 'package:products_app/constants/app_color.dart';
-import 'package:products_app/views/auth/profile/widget/button.widget.dart';
-import 'package:products_app/views/auth/profile/widget/selection.widget.dart';
-import 'package:products_app/views/auth/profile/widget/user.widget.dart';
+import 'package:thuethietbi/base/base.page.dart';
+import 'package:thuethietbi/constants/api.dart';
+import 'package:thuethietbi/constants/app_color.dart';
+import 'package:thuethietbi/views/auth/profile/widget/button.widget.dart';
+import 'package:thuethietbi/views/auth/profile/widget/selection.widget.dart';
+import 'package:thuethietbi/views/auth/profile/widget/user.widget.dart';
+
 import 'package:url_launcher/url_launcher.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -73,7 +74,7 @@ class _ProfileViewState extends State<ProfileView> {
                 SectionTitle(title: 'Chi tiết'),
                 ButtonWidget(
                   onTap: () {
-                    FlutterPhoneDirectCaller.callNumber('+0915660068');
+                    FlutterPhoneDirectCaller.callNumber('0915660068');
                   },
                   icon: Icons.support_agent,
                   color: Colors.pink,

@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:products_app/apps/di.dart';
+import 'package:thuethietbi/apps/di.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppSP {

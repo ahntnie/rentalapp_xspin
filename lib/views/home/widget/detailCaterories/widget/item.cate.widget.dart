@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'package:products_app/constants/api.dart';
-import 'package:products_app/constants/app_color.dart';
-import 'package:products_app/model/caterogies_model.dart';
-import 'package:products_app/viewmodel/categories.vm.dart';
+import 'package:thuethietbi/constants/api.dart';
+import 'package:thuethietbi/constants/app_color.dart';
+import 'package:thuethietbi/model/caterogies_model.dart';
+import 'package:thuethietbi/viewmodel/categories.vm.dart';
 
 class ItemWidget extends StatefulWidget {
   CategoriesViewModel cateViewModel;

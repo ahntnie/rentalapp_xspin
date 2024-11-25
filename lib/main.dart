@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:products_app/apps/di.dart';
-import 'package:products_app/views/splash/splash.view.dart';
+import 'package:thuethietbi/apps/di.dart';
+import 'package:thuethietbi/views/splash/splash.view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

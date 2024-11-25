@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:products_app/model/caterogies_model.dart';
-import 'package:products_app/model/message_model.dart';
-import 'package:products_app/model/products.model.dart';
-import 'package:products_app/request/categories.request.dart';
-import 'package:products_app/request/message_request.dart';
-import 'package:products_app/request/product.request.dart';
-import 'package:products_app/viewmodel/index.vm.dart';
-import 'package:products_app/views/home/widget/detailitem.widget.dart';
+import 'package:thuethietbi/model/caterogies_model.dart';
+import 'package:thuethietbi/model/message_model.dart';
+import 'package:thuethietbi/model/products.model.dart';
+import 'package:thuethietbi/request/categories.request.dart';
+import 'package:thuethietbi/request/message_request.dart';
+import 'package:thuethietbi/request/product.request.dart';
+import 'package:thuethietbi/viewmodel/index.vm.dart';
+import 'package:thuethietbi/views/home/widget/detailitem.widget.dart';
 import 'package:stacked/stacked.dart';
 
 class ProductViewModel extends BaseViewModel {
@@ -19,9 +19,15 @@ class ProductViewModel extends BaseViewModel {
   final ScrollController scrollController3 = ScrollController();
   String searchQuery = '';
   Products? data;
+  int? idCha;
+  int? idChaView;
+  Categories? detailCate;
+
   final messageRequest = MessageRequest();
   late Products detailProducts;
   List<Categories> lstCategory = [];
+
+  List<Categories> lstCateChild = [];
   List<Products> lstFilterProduct = [];
   List<Products> lstAllProducts = [];
   List<Products> lstFilterProductView = [];
@@ -33,7 +39,14 @@ class ProductViewModel extends BaseViewModel {
 
   void setCategories(List<Categories> categories) {
     lstCategory = categories;
-    notifyListeners(); // Cập nhật giao diện khi danh mục được thiết lập
+    notifyListeners();
+  }
+
+  Future<void> getCategoryById(int id) async {
+    detailCate = await categoriesRequest.getCategoryById(id);
+    print('Data danh mục :${detailCate!.name}');
+
+    notifyListeners();
   }
 
   void post(int id) async {
@@ -52,18 +65,6 @@ class ProductViewModel extends BaseViewModel {
     }
   }
 
-  String getCategoryNameForProduct(Products product) {
-    setBusy(true);
-    final category = lstCategory.firstWhere(
-      (category) => category.id == product.idCate,
-      orElse: () => Categories(id: 0, name: 'Unknown', image: 'default.png'),
-    );
-    // print(category.name);
-    setBusy(false);
-    notifyListeners();
-    return category.name ?? 'Unknown';
-  }
-
   List<Products> getSimilarProducts(int categoryId, int currentProductId) {
     return lstAllProducts
         .where((product) =>
@@ -71,36 +72,52 @@ class ProductViewModel extends BaseViewModel {
         .toList();
   }
 
+  Future<void> getFilterProductChildCate(int idDanhMuc) async {
+    setBusy(true);
+    lstFilterProduct =
+        await productRequest.getProductsByCategoryChild(idDanhMuc);
+    // print('ID cấp cha ở mục con: ${idCha}');
+    print('ID cấp cha ở mục con: ${idChaView}');
+
+    print('Có ${lstFilterProduct.length} sản phẩm trong danh mục ${idDanhMuc}');
+    setBusy(false);
+    filterData();
+    notifyListeners();
+  }
+
+  Future<void> getFilterProductChildCateView(int idDanhMuc) async {
+    setBusy(true);
+    lstFilterProductView =
+        await productRequest.getProductsByCategoryChild(idDanhMuc);
+    // print('ID cấp cha ở mục con: ${idCha}');
+    print('ID cấp cha ở mục con: ${idChaView}');
+    print('Có ${lstFilterProduct.length} sản phẩm trong danh mục ${idDanhMuc}');
+    setBusy(false);
+    filterDataView();
+    notifyListeners();
+  }
+
   Future<void> getFilterProducts(int idDanhMuc, String idCity) async {
     setBusy(true);
+
     if (idDanhMuc == 0 && idCity.isEmpty) {
       lstFilterProduct = await productRequest.getLstProduct();
-      print(
-          'Gọi getFilterProductView với idDanhMuc: $idDanhMuc, idCity: $idCity');
-      print('data detail all -----> ${lstFilterProduct.length}');
-    }
-    // Nếu chỉ chọn Khu vực
-    else if (idCity.isNotEmpty && idDanhMuc == 0) {
+      idCha = 0;
+      print('Gọi getFilterProducts với idDanhMuc: $idDanhMuc, idCity: $idCity');
+    } else if (idCity.isNotEmpty && idDanhMuc == 0) {
       lstFilterProduct = await productRequest.getProductFilterLocation(idCity);
-      print(
-          'Gọi getFilterProductView với idDanhMuc: $idDanhMuc, idCity: $idCity');
-      print('data detail teho khu vực -----> ${lstFilterProduct.length}');
-    }
-    // Nếu chỉ chọn Danh mục
-    else if (idDanhMuc != 0 && idCity.isEmpty) {
+      print('Gọi getFilterProducts với idDanhMuc: $idDanhMuc, idCity: $idCity');
+    } else if (idDanhMuc != 0 && idCity.isEmpty) {
       lstFilterProduct = await productRequest.getProductsByCategory(idDanhMuc);
-      print(
-          'Gọi getFilterProductView với idDanhMuc: $idDanhMuc, idCity: $idCity');
-      print('data detail theo danh mục -----> ${lstFilterProduct.length}');
-    }
-    // Nếu cả Danh mục và Khu vực đều được chọn
-    else if (idDanhMuc != 0 && idCity.isNotEmpty) {
+      idCha = idDanhMuc; // Cập nhật danh mục cha
+      print('Gọi getFilterProducts với idDanhMuc: $idDanhMuc, idCity: $idCity');
+    } else if (idDanhMuc != 0 && idCity.isNotEmpty) {
       lstFilterProduct =
           await productRequest.getProductFilter(idDanhMuc, idCity);
-      print(
-          'Gọi getFilterProductView với idDanhMuc: $idDanhMuc, idCity: $idCity');
-      print('data detail theo cả 2 -----> ${lstFilterProduct.length}');
+      idCha = idDanhMuc; // Cập nhật danh mục cha
+      print('Gọi getFilterProducts với idDanhMuc: $idDanhMuc, idCity: $idCity');
     }
+
     filterData();
     setBusy(false);
     notifyListeners();
@@ -120,30 +137,27 @@ class ProductViewModel extends BaseViewModel {
     setBusy(true);
     if (idDanhMuc == 0 && idCity.isEmpty) {
       lstFilterProductView = await productRequest.getLstProduct();
+      idChaView = 0;
       print(
           'Gọi getFilterProductView với idDanhMuc: $idDanhMuc, idCity: $idCity');
       print('data333 all -----> ${lstFilterProductView.length}');
-    }
-    // Nếu chỉ chọn Khu vực
-    else if (idCity.isNotEmpty && idDanhMuc == 0) {
+    } else if (idCity.isNotEmpty && idDanhMuc == 0) {
       lstFilterProductView =
           await productRequest.getProductFilterLocation(idCity);
       print(
           'Gọi getFilterProductView với idDanhMuc: $idDanhMuc, idCity: $idCity');
       print('data222 location -----> ${lstFilterProductView.length}');
-    }
-    // Nếu chỉ chọn Danh mục
-    else if (idDanhMuc != 0 && idCity.isEmpty) {
+    } else if (idDanhMuc != 0 && idCity.isEmpty) {
       lstFilterProductView =
           await productRequest.getProductsByCategory(idDanhMuc);
+      idChaView = idDanhMuc;
       print(
           'Gọi getFilterProductView với idDanhMuc: $idDanhMuc, idCity: $idCity');
       print('data111 cate -----> ${lstFilterProductView.length}');
-    }
-    // Nếu cả Danh mục và Khu vực đều được chọn
-    else if (idDanhMuc != 0 && idCity.isNotEmpty) {
+    } else if (idDanhMuc != 0 && idCity.isNotEmpty) {
       lstFilterProductView =
           await productRequest.getProductFilter(idDanhMuc, idCity);
+      idChaView = idDanhMuc;
       print(
           'Gọi getFilterProductView với idDanhMuc: $idDanhMuc, idCity: $idCity');
       print('data444 filter -----> ${lstFilterProductView.length}');
@@ -216,6 +230,7 @@ class ProductViewModel extends BaseViewModel {
 
   nextDetailProduct() async {
     print('nhảy');
+    await getCategoryById(detailProducts.idCate!);
     Navigator.push(
       viewContext,
       PageRouteBuilder(

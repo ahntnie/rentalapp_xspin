@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 
-import 'package:products_app/base/base.page.dart';
-import 'package:products_app/constants/api.dart';
-import 'package:products_app/constants/app_color.dart';
-import 'package:products_app/constants/app_fontsize.dart';
-import 'package:products_app/model/products.model.dart';
-import 'package:products_app/viewmodel/product.vm.dart';
-import 'package:products_app/views/home/widget/axis/lst.scroll.widget.dart';
-import 'package:products_app/views/home/widget/detailCaterories/widget/dialog/dialog.dart';
-import 'package:products_app/views/home/widget/full_image.dart';
+import 'package:thuethietbi/base/base.page.dart';
+import 'package:thuethietbi/constants/api.dart';
+import 'package:thuethietbi/constants/app_color.dart';
+import 'package:thuethietbi/constants/app_fontsize.dart';
+import 'package:thuethietbi/model/products.model.dart';
+import 'package:thuethietbi/viewmodel/product.vm.dart';
+import 'package:thuethietbi/views/home/widget/axis/lst.scroll.widget.dart';
+import 'package:thuethietbi/views/home/widget/detailCaterories/widget/dialog/dialog.dart';
+import 'package:thuethietbi/views/home/widget/full_image.dart';
 
 class DetailItem extends StatefulWidget {
   final Products data;
@@ -58,11 +58,15 @@ class _DetailItemState extends State<DetailItem> {
     }
   }
 
+  Future<void> _loadCategoryDetail() async {
+    if (widget.categoryId != 0) {
+      await widget.productViewModel.getCategoryById(widget.categoryId);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    String categoryName =
-        widget.productViewModel.getCategoryNameForProduct(widget.data);
-
+    final categoryName = widget.productViewModel.detailCate?.name ?? 'Unknown';
     return BasePage(
       title: widget.data.title,
       body: SingleChildScrollView(
@@ -81,7 +85,7 @@ class _DetailItemState extends State<DetailItem> {
                                   widget.data.images!.isEmpty)
                               ? ['${API.HOST_IMAGE}${widget.data.imageBgr}']
                               : widget.data.images!
-                                  .map((img) => '${API.HOST_IMAGE_LIST}$img')
+                                  .map((img) => '${API.HOST_IMAGE}$img')
                                   .toList();
                           Navigator.push(
                             context,
@@ -123,7 +127,7 @@ class _DetailItemState extends State<DetailItem> {
                                   },
                                   itemBuilder: (context, index) {
                                     return Image.network(
-                                      '${API.HOST_IMAGE_LIST}${widget.data.images![index]}',
+                                      '${API.HOST_IMAGE}${widget.data.images![index]}',
                                       fit: BoxFit.contain,
                                       width: double.infinity,
                                       errorBuilder:
@@ -269,6 +273,19 @@ class _DetailItemState extends State<DetailItem> {
                           '${API.HOST_IMAGE}${widget.data.avt}',
                           width: 50,
                           height: 50,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Container(
+                              width: 30, // Chiều rộng mong muốn
+                              height: 30,
+                              color: AppColor.extraColor,
+                              child: Image.asset(
+                                'assets/logo_app.png',
+                                width: 25,
+                                height: 25,
+                                fit: BoxFit.cover,
+                              ),
+                            );
+                          },
                         ),
                       )
                     else if (widget.data.avt!.isEmpty || widget.data.avt == '')
