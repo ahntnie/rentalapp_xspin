@@ -1,28 +1,24 @@
 import 'package:flutter/material.dart';
-
 import 'package:thuethietbi/constants/api.dart';
 import 'package:thuethietbi/constants/app_color.dart';
-
 import 'package:thuethietbi/model/caterogies_model.dart';
 import 'package:thuethietbi/viewmodel/categories.vm.dart';
-import 'package:thuethietbi/viewmodel/product.vm.dart';
 
-class ItemCateWidget extends StatefulWidget {
+class ItemChildCate extends StatefulWidget {
   CategoriesViewModel cateViewModel;
   final Categories data;
-
   VoidCallback onTap;
-  ItemCateWidget(
+  ItemChildCate(
       {super.key,
       required this.onTap,
       required this.cateViewModel,
       required this.data});
 
   @override
-  State<ItemCateWidget> createState() => _ItemCateWidgetState();
+  State<ItemChildCate> createState() => _ItemChildCateState();
 }
 
-class _ItemCateWidgetState extends State<ItemCateWidget> {
+class _ItemChildCateState extends State<ItemChildCate> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -32,18 +28,18 @@ class _ItemCateWidgetState extends State<ItemCateWidget> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ClipRRect(
-              borderRadius: BorderRadius.circular(8.0), // Bo góc nếu cần
+              borderRadius: BorderRadius.circular(8.0),
               child: Container(
-                width: 70, // Chiều rộng mong muốn
-                height: 70, // Chiều cao mong muốn
+                width: 70,
+                height: 70,
                 child: Image.network(
                   '${API.HOST_IMAGE}${widget.data.image}',
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) {
                     // Hiển thị khung màu vàng nếu có lỗi
                     return Container(
-                      width: 70,
-                      height: 70,
+                      width: double.infinity,
+                      height: 120,
                       color: AppColor.extraColor,
                       child: const Icon(
                         Icons.image_not_supported, // Biểu tượng thay thế

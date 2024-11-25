@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:products_app/constants/api.dart';
-import 'package:products_app/constants/app_color.dart';
-import 'package:products_app/constants/app_fontsize.dart';
-import 'package:products_app/model/products.model.dart';
-import 'package:products_app/viewmodel/product.vm.dart';
+import 'package:thuethietbi/constants/api.dart';
+import 'package:thuethietbi/constants/app_color.dart';
+import 'package:thuethietbi/constants/app_fontsize.dart';
+import 'package:thuethietbi/model/products.model.dart';
+import 'package:thuethietbi/viewmodel/product.vm.dart';
 
 class ItemProduct extends StatefulWidget {
   ProductViewModel productViewModel;
@@ -22,8 +22,6 @@ class ItemProduct extends StatefulWidget {
 class _ItemProductState extends State<ItemProduct> {
   @override
   Widget build(BuildContext context) {
-    // String categoryName =
-    //     widget.productViewModel.getCategoryNameForProduct(widget.data);
     return InkWell(
         onTap: widget.onTap,
         child: SizedBox(
@@ -37,6 +35,7 @@ class _ItemProductState extends State<ItemProduct> {
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   mainAxisSize: MainAxisSize.max,
                   children: [
                     ClipRRect(
@@ -61,16 +60,18 @@ class _ItemProductState extends State<ItemProduct> {
                       ),
                     ),
                     SizedBox(height: 5),
-                    Text(
-                      widget.data.title ?? '',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: AppFontSize.sizeSuperSmall,
+                    SizedBox(
+                      height: 40,
+                      child: Text(
+                        widget.data.title ?? '',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: AppFontSize.sizeSuperSmall,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
                     ),
-                    // SizedBox(height: 2),
                     Flexible(
                       child: Text(
                         widget.data.nameUser ?? 'Guest',
@@ -94,7 +95,7 @@ class _ItemProductState extends State<ItemProduct> {
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    Spacer(), // SizedBox(height: 40),
+                    Spacer(),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.end,

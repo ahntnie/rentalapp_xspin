@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:products_app/constants/app_color.dart';
-import 'package:products_app/constants/app_fontsize.dart';
-import 'package:products_app/model/location.model.dart';
+import 'package:thuethietbi/constants/app_color.dart';
+import 'package:thuethietbi/constants/app_fontsize.dart';
+import 'package:thuethietbi/model/location.model.dart';
 
 class FilterLocations {
   final String title;

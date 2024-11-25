@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
-import 'package:products_app/constants/app_color.dart';
-import 'package:products_app/constants/app_fontsize.dart';
+import 'package:thuethietbi/constants/app_color.dart';
+import 'package:thuethietbi/constants/app_fontsize.dart';
 
 class UserInfo extends StatelessWidget {
   @override
@@ -30,8 +30,7 @@ class UserInfo extends StatelessWidget {
               ),
               InkWell(
                 onTap: () {
-                  FlutterPhoneDirectCaller.callNumber('+0915660068');
-                  // launchUrlString('tel:+1231231231232');
+                  FlutterPhoneDirectCaller.callNumber('0915660068');
                 },
                 child: Text('0915 660 068',
                     style: TextStyle(

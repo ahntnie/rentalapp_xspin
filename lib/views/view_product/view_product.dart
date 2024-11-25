@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:products_app/base/base.page.dart';
-import 'package:products_app/constants/app_color.dart';
-import 'package:products_app/constants/app_fontsize.dart';
-import 'package:products_app/viewmodel/categories.vm.dart';
-import 'package:products_app/viewmodel/index.vm.dart';
-import 'package:products_app/viewmodel/product.vm.dart';
-import 'package:products_app/views/view_product/widget/category/list.item.cate.widget.dart';
-import 'package:products_app/views/view_product/widget/filterBrand/fillter.widget.dart';
-import 'package:products_app/views/view_product/widget/filterLocation/fliter.location.widget.dart';
-import 'package:products_app/views/view_product/widget/listview/item.product.dart';
+import 'package:thuethietbi/base/base.page.dart';
+import 'package:thuethietbi/constants/app_color.dart';
+import 'package:thuethietbi/constants/app_fontsize.dart';
+import 'package:thuethietbi/viewmodel/categories.vm.dart';
+import 'package:thuethietbi/viewmodel/index.vm.dart';
+import 'package:thuethietbi/viewmodel/product.vm.dart';
+import 'package:thuethietbi/views/home/widget/detailCaterories/widget/cate_child/list.dart';
+import 'package:thuethietbi/views/view_product/widget/category/list.item.cate.widget.dart';
+import 'package:thuethietbi/views/view_product/widget/filterBrand/fillter.widget.dart';
+import 'package:thuethietbi/views/view_product/widget/filterLocation/fliter.location.widget.dart';
+import 'package:thuethietbi/views/view_product/widget/listview/item.product.dart';
 import 'package:stacked/stacked.dart';
 
 class ViewProduct extends StatefulWidget {
@@ -31,13 +32,51 @@ class _ViewProductState extends State<ViewProduct> {
   bool isAllSelectedCategory = false;
   bool isAllSelectedLocation = false;
   bool isLocationListVisible = true;
+  bool isSelectedChildCate = false;
 
   Map<String, String> _selectedOptions = {
     'Khu vực': 'Toàn quốc',
     'Loại sản phẩm': 'Tất cả',
+    'Hạng mục': 'Tất cả'
   };
   String _selectedCategoryId = '';
   String _selectedCityId = '';
+  int? idChaView;
+  void _handleOptionSelectedChildCate(String filterType, String option) {
+    setState(() {
+      _selectedOptions[filterType] = option;
+
+      if (option == "Tất cả" || option.isEmpty) {
+        isSelectedChildCate = true;
+        _selectedCategoryId = '';
+        widget.productViewModel
+            .getFilterProductView(0, _selectedCityId)
+            .then((_) {
+          setState(() {});
+        });
+      } else {
+        isSelectedChildCate = false;
+        final selectedChildCategory = widget
+            .indexViewModel.categoriesViewModel.lstCateChild
+            .firstWhere((child) => child.name == option);
+        idChaView = widget.productViewModel.idChaView;
+        if (selectedChildCategory != null) {
+          _selectedCategoryId = selectedChildCategory.id.toString();
+        }
+      }
+    });
+    if (_selectedCategoryId.isNotEmpty) {
+      int selectedChildId = int.tryParse(_selectedCategoryId) ?? 0;
+      widget.productViewModel
+          .getFilterProductView(selectedChildId, _selectedCityId)
+          .then((_) {
+        setState(() {
+          print(
+              'Chọn danh mục với idDanhMuc là: ${selectedChildId} và idCity: ${_selectedCityId}');
+        });
+      });
+    }
+  }
 
   void _handleOptionSelected(String filterType, String option) {
     setState(() {
@@ -55,13 +94,45 @@ class _ViewProductState extends State<ViewProduct> {
         final selectedLocation = widget
             .indexViewModel.locationViewModel.lstLocation
             .firstWhere((location) => location.name == option);
+        print('ID Cha hiện tại: ${widget.productViewModel.idChaView}');
+
         _selectedCityId = selectedLocation.id;
+        if (widget.productViewModel.idChaView != 0) {
+          widget.productViewModel
+              .getFilterProductView(
+                  widget.productViewModel.idChaView ?? 0, _selectedCityId)
+              .then((_) {
+            setState(() {
+              print('ID Cha hiện tại: ${widget.productViewModel.idChaView}');
+            });
+          });
+        } else {
+          widget.productViewModel
+              .getFilterProductView(0, _selectedCityId)
+              .then((_) {
+            setState(() {});
+          });
+        }
       }
     } else if (filterType == 'Loại sản phẩm') {
       if (option == "Tất cả" || option.isEmpty) {
         isAllSelectedCategory = true;
         isCategoryListVisible = true;
+        isSelectedChildCate = false;
+
         _selectedCategoryId = '';
+        if (_selectedCityId.isNotEmpty) {
+          widget.productViewModel
+              .getFilterProductView(0, _selectedCityId)
+              .then((_) {
+            setState(() {});
+          });
+        } else {
+          widget.productViewModel.getFilterProductView(0, '').then((_) {
+            setState(() {});
+          });
+        }
+        widget.indexViewModel.categoriesViewModel.lstCateChild.clear();
       } else {
         isCategoryListVisible = false;
         isAllSelectedCategory = false;
@@ -69,6 +140,21 @@ class _ViewProductState extends State<ViewProduct> {
             .indexViewModel.categoriesViewModel.lstCate
             .firstWhere((category) => category.name == option);
         _selectedCategoryId = selectedCategory.id.toString();
+        widget.productViewModel.idChaView = selectedCategory.id;
+        widget.indexViewModel.categoriesViewModel
+            .loadCategoriesChild(selectedCategory.id ?? 0)
+            .then((_) {
+          setState(() {
+            isSelectedChildCate = widget
+                .indexViewModel.categoriesViewModel.lstCateChild.isNotEmpty;
+          });
+        });
+        widget.productViewModel
+            .getFilterProductView(selectedCategory.id ?? 0, '')
+            .then((_) {
+          setState(() {});
+        });
+        isSelectedChildCate = true;
       }
     }
 
@@ -77,23 +163,19 @@ class _ViewProductState extends State<ViewProduct> {
       widget.productViewModel.getFilterProductView(0, '').then((_) {
         setState(() {});
       });
-    } else if (isAllSelectedCategory && !isAllSelectedLocation) {
-      widget.productViewModel
-          .getFilterProductView(0, _selectedCityId)
-          .then((_) {
-        setState(() {});
-      });
     } else if (!isAllSelectedCategory && isAllSelectedLocation) {
       widget.productViewModel
           .getFilterProductView(selectedIdCate, '')
           .then((_) {
         setState(() {});
       });
-    } else {
+    } else if (!isAllSelectedCategory && !isAllSelectedLocation) {
       widget.productViewModel
           .getFilterProductView(selectedIdCate, _selectedCityId)
           .then((_) {
-        setState(() {});
+        setState(() {
+          print('ID Cha hiện tại: ${widget.productViewModel.idChaView}');
+        });
       });
     }
   }
@@ -182,8 +264,7 @@ class _ViewProductState extends State<ViewProduct> {
           disposeViewModel: false,
           onViewModelReady: (viewModel) async {
             viewModel.viewContext = context;
-            // await viewModel.categoriesViewModel.loadCategories();
-            // await viewModel.productViewModel.getAllProducts();
+
             await viewModel.locationViewModel.loadLocations();
             widget.productViewModel
                 .setCategories(viewModel.categoriesViewModel.lstCate);
@@ -323,6 +404,25 @@ class _ViewProductState extends State<ViewProduct> {
                                   ],
                                   onOptionSelected: _handleOptionSelected,
                                 ),
+                                if (widget.indexViewModel.categoriesViewModel
+                                        .lstCateChild.isNotEmpty &&
+                                    !isAllSelectedCategory)
+                                  FilterButton(
+                                    selectedOptions: {
+                                      'Hạng mục': _selectedOptions['Hạng mục']!,
+                                    },
+                                    icon: Icons.filter_alt_outlined,
+                                    nameFilter: 'Hạng mục',
+                                    filterOptions: [
+                                      FilterOption(
+                                        title: 'Hạng mục',
+                                        options: widget.indexViewModel
+                                            .categoriesViewModel.lstCateChild,
+                                      ),
+                                    ],
+                                    onOptionSelected:
+                                        _handleOptionSelectedChildCate,
+                                  ),
                                 SizedBox(
                                   height: 10,
                                 ),
@@ -332,6 +432,15 @@ class _ViewProductState extends State<ViewProduct> {
                                         .indexViewModel.categoriesViewModel,
                                     onOptionSelected: _handleOptionSelected,
                                   ),
+                                if (isSelectedChildCate &&
+                                    _selectedOptions['Loại sản phẩm'] !=
+                                        'Tất cả')
+                                  ListItemChildCate(
+                                      productViewModel: widget.productViewModel,
+                                      cateViewModel: widget
+                                          .indexViewModel.categoriesViewModel,
+                                      onOptionSelected:
+                                          _handleOptionSelectedChildCate),
                                 SizedBox(
                                   height: 5,
                                 ),

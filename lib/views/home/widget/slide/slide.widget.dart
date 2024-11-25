@@ -1,8 +1,8 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:products_app/constants/api.dart';
-import 'package:products_app/constants/app_color.dart';
+import 'package:thuethietbi/constants/api.dart';
+import 'package:thuethietbi/constants/app_color.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class Slide extends StatefulWidget {
@@ -18,18 +18,18 @@ class _SlideState extends State<Slide> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SizedBox(
-          height: 5,
-        ),
+        // SizedBox(
+        //   height: 5,
+        // ),
         CarouselSlider(
           options: CarouselOptions(
-            height: 180.0,
-            autoPlay: true, // Bật chế độ tự động trượt
-            autoPlayInterval: Duration(seconds: 3), // Thời gian mỗi lần trượt
+            height: MediaQuery.of(context).size.width / 4,
+            autoPlay: true,
+            autoPlayInterval: Duration(seconds: 3),
             enlargeCenterPage: true,
             viewportFraction: 1,
             aspectRatio: 16 / 9,
-            scrollPhysics: BouncingScrollPhysics(), // Hiệu ứng cuộn giống iOS
+            scrollPhysics: BouncingScrollPhysics(),
             pauseAutoPlayOnTouch: true,
             pauseAutoPlayOnManualNavigate: true,
             enlargeStrategy: CenterPageEnlargeStrategy.height,
@@ -44,14 +44,13 @@ class _SlideState extends State<Slide> {
             return Builder(
               builder: (BuildContext context) {
                 return Container(
-                  width: MediaQuery.of(context).size.width,
-                  margin: EdgeInsets.symmetric(horizontal: 5.0),
+                  width: double.infinity,
                   decoration: BoxDecoration(
                     color: AppColor.extraColor,
                   ),
                   child: Image.network(
                     image,
-                    fit: BoxFit.fill,
+                    fit: BoxFit.contain,
                     loadingBuilder: (BuildContext context, Widget child,
                         ImageChunkEvent? loadingProgress) {
                       if (loadingProgress == null) {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:products_app/viewmodel/categories.vm.dart';
-import 'package:products_app/views/view_product/widget/category/item.cate.widget.dart';
+import 'package:thuethietbi/viewmodel/categories.vm.dart';
+import 'package:thuethietbi/views/view_product/widget/category/item.cate.widget.dart';
 
 // ignore: must_be_immutable
 class ListItemCateWidget extends StatefulWidget {

@@ -1,8 +1,7 @@
-import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:products_app/constants/app_color.dart';
-import 'package:products_app/constants/app_fontsize.dart';
-import 'package:products_app/viewmodel/product.vm.dart';
+import 'package:thuethietbi/constants/app_color.dart';
+import 'package:thuethietbi/constants/app_fontsize.dart';
+import 'package:thuethietbi/viewmodel/product.vm.dart';
 
 void showInfoDialog(BuildContext context, ProductViewModel viewModel, int id) {
   String? phoneError;
@@ -21,10 +20,12 @@ void showInfoDialog(BuildContext context, ProductViewModel viewModel, int id) {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Image.asset(
-                    'assets/logo_app.png',
-                    height: 60,
-                    width: 60,
+                  ClipOval(
+                    child: Image.asset(
+                      'assets/logo_app.png',
+                      height: 60,
+                      width: 60,
+                    ),
                   ),
                   SizedBox(height: 20),
                   Text(
@@ -74,12 +75,10 @@ void showInfoDialog(BuildContext context, ProductViewModel viewModel, int id) {
                     setState(() {
                       phoneError = viewModel.phone.text.isEmpty
                           ? "Vui lòng nhập số điện thoại"
-                          : viewModel.phone.text.length != 10
-                              ? "Vui lòng nhập chính xác số điện thoại"
-                              : !RegExp(r'^[0-9]+$')
-                                      .hasMatch(viewModel.phone.text)
-                                  ? "Số điện thoại chỉ bao gồm chữ số"
-                                  : null;
+                          : !RegExp(r'^(?:\+84|0)(3|5|7|8|9)\d{8}$')
+                                  .hasMatch(viewModel.phone.text)
+                              ? "Vui lòng nhập số điện thoại hợp lệ"
+                              : null;
                     });
 
                     if (phoneError == null) {

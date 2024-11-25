@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:products_app/viewmodel/categories.vm.dart';
-import 'package:products_app/viewmodel/location.vm.dart';
-import 'package:products_app/viewmodel/product.vm.dart';
-import 'package:products_app/views/auth/profile/profile.view.dart';
-import 'package:products_app/views/home/home.view.dart';
-import 'package:products_app/views/view_product/view_product.dart';
+import 'package:thuethietbi/viewmodel/categories.vm.dart';
+import 'package:thuethietbi/viewmodel/location.vm.dart';
+import 'package:thuethietbi/viewmodel/product.vm.dart';
+import 'package:thuethietbi/views/auth/profile/profile.view.dart';
+import 'package:thuethietbi/views/home/home.view.dart';
+import 'package:thuethietbi/views/view_product/view_product.dart';
 
 import 'package:stacked/stacked.dart';
 
@@ -35,6 +35,7 @@ class IndexViewModel extends BaseViewModel {
       productViewModel.getFilterProductView(0, ''),
       productViewModel.getFilterProducts(0, ''),
       categoriesViewModel.loadCategories(),
+      // categoriesViewModel.loadCategoriesChild(productViewModel.data!.idCate?? 0),
     ]);
     setBusy(false); // Đặt isBusy thành false khi tải xong
   }

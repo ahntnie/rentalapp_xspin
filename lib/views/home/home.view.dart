@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:products_app/base/base.page.dart';
-import 'package:products_app/constants/app_color.dart';
-import 'package:products_app/constants/app_fontsize.dart';
-import 'package:products_app/viewmodel/categories.vm.dart';
-import 'package:products_app/viewmodel/index.vm.dart';
-import 'package:products_app/viewmodel/product.vm.dart';
-import 'package:products_app/views/home/widget/detailCaterories/detail.cate.widget.dart';
-import 'package:products_app/views/home/widget/item.product.widget.dart';
-import 'package:products_app/views/home/widget/menu.widget.dart';
-import 'package:products_app/views/home/widget/slide/slide.widget.dart';
+import 'package:thuethietbi/base/base.page.dart';
+import 'package:thuethietbi/constants/app_color.dart';
+import 'package:thuethietbi/constants/app_fontsize.dart';
+import 'package:thuethietbi/viewmodel/categories.vm.dart';
+import 'package:thuethietbi/viewmodel/index.vm.dart';
+import 'package:thuethietbi/viewmodel/product.vm.dart';
+import 'package:thuethietbi/views/home/widget/detailCaterories/detail.cate.widget.dart';
+import 'package:thuethietbi/views/home/widget/item.product.widget.dart';
+import 'package:thuethietbi/views/home/widget/menu.widget.dart';
+import 'package:thuethietbi/views/home/widget/slide/slide.widget.dart';
 import 'package:stacked/stacked.dart';
 
 class HomeView extends StatefulWidget {
@@ -63,6 +63,7 @@ class _HomeViewState extends State<HomeView> {
     CategoriesViewModel categoriesViewModel = CategoriesViewModel();
     ProductViewModel productViewModel = ProductViewModel();
     await categoriesViewModel.loadCategories();
+
     productViewModel.setCategories(categoriesViewModel.lstCate);
   }
 
@@ -89,11 +90,10 @@ class _HomeViewState extends State<HomeView> {
             floating: _isScrollToTopButtonVisible
                 ? FloatingActionButton(
                     onPressed: () {
-                      // Sử dụng scrollController để cuộn lên đầu
                       widget.productViewModel.scrollController.animateTo(
-                        0, // Vị trí 0 là đầu danh sách
-                        duration: Duration(milliseconds: 700), // Thời gian cuộn
-                        curve: Curves.easeInOut, // Hiệu ứng cuộn
+                        0,
+                        duration: Duration(milliseconds: 700),
+                        curve: Curves.easeInOut,
                       );
                     },
                     child: Icon(
@@ -112,6 +112,7 @@ class _HomeViewState extends State<HomeView> {
                   height: 40,
                   child: GestureDetector(
                     onTap: () {
+                      viewModel.categoriesViewModel.loadCategoriesChild(0);
                       Navigator.push(
                           context,
                           MaterialPageRoute(

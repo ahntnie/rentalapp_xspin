@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:products_app/constants/app_color.dart';
-import 'package:products_app/constants/app_fontsize.dart';
+import 'package:thuethietbi/constants/app_color.dart';
+import 'package:thuethietbi/constants/app_fontsize.dart';
 
 class BasePage extends StatefulWidget {
   final bool showLogo;

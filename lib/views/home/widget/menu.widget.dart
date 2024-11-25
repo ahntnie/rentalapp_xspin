@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:products_app/constants/app_color.dart';
-import 'package:products_app/model/caterogies_model.dart';
-import 'package:products_app/viewmodel/categories.vm.dart';
-import 'package:products_app/viewmodel/index.vm.dart';
-import 'package:products_app/views/home/widget/detailCaterories/detail.cate.widget.dart';
-import 'package:products_app/views/home/widget/item.menu.widget.dart';
+import 'package:thuethietbi/constants/app_color.dart';
+import 'package:thuethietbi/model/caterogies_model.dart';
+import 'package:thuethietbi/viewmodel/categories.vm.dart';
+import 'package:thuethietbi/viewmodel/index.vm.dart';
+import 'package:thuethietbi/views/home/widget/detailCaterories/detail.cate.widget.dart';
+import 'package:thuethietbi/views/home/widget/item.menu.widget.dart';
 
 class MenuWidget extends StatefulWidget {
   MenuWidget(
@@ -41,6 +41,7 @@ class _MenuWidgetState extends State<MenuWidget> {
                 ),
                 InkWell(
                   onTap: () {
+                    widget.cateViewModel.loadCategoriesChild(0);
                     widget.cateViewModel.viewContext = context;
                     widget.indexViewModel.productViewModel
                         .getFilterProducts(0, '')
@@ -87,6 +88,7 @@ class _MenuWidgetState extends State<MenuWidget> {
                         widget.cateViewModel.lstCate.firstWhere(
                       (cate) => cate.id == category.id,
                     );
+                    widget.cateViewModel.loadCategoriesChild(category.id ?? 0);
                     widget.cateViewModel.viewContext = context;
                     await widget.indexViewModel.productViewModel
                         .getFilterProducts(category.id ?? 0, '');

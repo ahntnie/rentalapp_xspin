@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:products_app/constants/app_color.dart';
-import 'package:products_app/model/caterogies_model.dart';
+import 'package:thuethietbi/constants/app_color.dart';
+import 'package:thuethietbi/model/caterogies_model.dart';
 
 class FilterOption {
   final String title;
@@ -69,19 +69,13 @@ class _FilterButtonState extends State<FilterButton> {
           OutlinedButton(
             style: ButtonStyle(
               padding: MaterialStateProperty.all<EdgeInsets>(
-                EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 2), // Điều chỉnh padding để làm nút nhỏ hơn
+                EdgeInsets.symmetric(horizontal: 8, vertical: 2),
               ),
-              minimumSize: MaterialStateProperty.all<Size>(
-                Size(80, 30), // Đặt kích thước tối thiểu cho nút
-              ),
+              minimumSize: MaterialStateProperty.all<Size>(Size(80, 30)),
               side: MaterialStateProperty.resolveWith<BorderSide>(
                   (Set<MaterialState> states) {
                 return BorderSide(
-                  color: isSelected
-                      ? AppColor.primaryColor
-                      : Colors.grey, // Viền màu khi không nhấn
+                  color: AppColor.primaryColor, // Đổi màu viền khi có lựa chọn
                   width: 1,
                 );
               }),
@@ -91,14 +85,13 @@ class _FilterButtonState extends State<FilterButton> {
               }),
               backgroundColor: MaterialStateProperty.resolveWith<Color>(
                   (Set<MaterialState> states) {
-                return isSelected
-                    ? AppColor.primaryColor.withOpacity(0.3)
-                    : Colors.transparent; // Nền trong suốt khi chưa chọn
+                return AppColor.primaryColor
+                    .withOpacity(0.3); // Màu nền khi có lựa chọn
               }),
               overlayColor: MaterialStateProperty.resolveWith<Color?>(
                   (Set<MaterialState> states) {
                 if (states.contains(MaterialState.pressed)) {
-                  return AppColor.primaryColor; // Màu overlay khi nhấn
+                  return AppColor.primaryColor;
                 }
                 return null;
               }),
@@ -250,16 +243,17 @@ class _FilterButtonState extends State<FilterButton> {
                 Text(
                   _getSelectedOptionsText(),
                   style: TextStyle(
-                    fontWeight: FontWeight.normal,
-                    color: isSelected ? AppColor.primaryColor : Colors.black,
-                  ),
+                      fontWeight: FontWeight.normal,
+                      color: isSelected
+                          ? AppColor.primaryColor
+                          : AppColor.primaryColor),
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
                 ),
-                Icon(
-                  Icons.arrow_drop_down_sharp,
-                  color: isSelected ? AppColor.primaryColor : Colors.black,
-                ),
+                Icon(Icons.arrow_drop_down_sharp,
+                    color: isSelected
+                        ? AppColor.primaryColor
+                        : AppColor.primaryColor),
               ],
             ),
           ),
