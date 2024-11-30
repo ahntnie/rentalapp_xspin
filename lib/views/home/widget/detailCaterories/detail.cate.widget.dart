@@ -85,17 +85,14 @@ class _ViewProductByCateState extends State<ViewProductByCate> {
     });
 
     if (filterType == 'Khu vực') {
-      // Xử lý khi chọn khu vực
       if (option == "Toàn quốc") {
         isLocationListVisible = true;
         _selectedCityId = '';
       } else {
         isLocationListVisible = false;
-
         final selectedLocation = widget
             .indexViewModel.locationViewModel.lstLocation
             .firstWhere((location) => location.name == option);
-        print('ID Cha hiện tại: ${widget.productViewModel.idCha}');
         _selectedCityId = selectedLocation.id;
 
         if (widget.productViewModel.idCha != 0) {
@@ -103,9 +100,7 @@ class _ViewProductByCateState extends State<ViewProductByCate> {
               .getFilterProducts(
                   widget.productViewModel.idCha ?? 0, _selectedCityId)
               .then((_) {
-            setState(() {
-              print('ID Cha hiện tại: ${widget.productViewModel.idCha}');
-            });
+            setState(() {});
           });
         } else {
           widget.productViewModel
@@ -120,20 +115,25 @@ class _ViewProductByCateState extends State<ViewProductByCate> {
         isCategoryListVisible = true;
         _selectedCategoryId = '';
         isSelectedChildCate = false;
+        widget.indexViewModel.categoriesViewModel.lstCateChild.clear();
         if (_selectedCityId.isNotEmpty) {
           widget.productViewModel
-              .getFilterProducts(0, _selectedCityId)
+              .getFilterProducts(0, widget.productViewModel.idCityPage ?? '')
               .then((_) {
-            setState(() {});
+            setState(() {
+              isSelectedChildCate = widget
+                  .indexViewModel.categoriesViewModel.lstCateChild.isNotEmpty;
+              if (!isSelectedChildCate) {
+                _selectedOptions['Hạng mục'] = 'Tất cả';
+                _selectedCategoryId = '';
+              }
+            });
           });
         } else {
           widget.productViewModel.getFilterProducts(0, '').then((_) {
             setState(() {});
           });
         }
-
-        // Ẩn danh mục cons
-        widget.indexViewModel.categoriesViewModel.lstCateChild.clear();
       } else {
         isCategoryListVisible = false;
 
@@ -149,10 +149,12 @@ class _ViewProductByCateState extends State<ViewProductByCate> {
           setState(() {
             isSelectedChildCate = widget
                 .indexViewModel.categoriesViewModel.lstCateChild.isNotEmpty;
+            if (!isSelectedChildCate) {
+              _selectedOptions['Hạng mục'] = 'Tất cả';
+              _selectedCategoryId = '';
+            }
           });
         });
-
-        // Lọc sản phẩm theo danh mục cha
         widget.productViewModel
             .getFilterProducts(selectedCategory.id ?? 0, '')
             .then((_) {
@@ -177,9 +179,7 @@ class _ViewProductByCateState extends State<ViewProductByCate> {
       widget.productViewModel
           .getFilterProducts(selectedIdCate, _selectedCityId)
           .then((_) {
-        setState(() {
-          print('ID Cha hiện tại: ${widget.productViewModel.idCha}');
-        });
+        setState(() {});
       });
     }
   }

@@ -123,9 +123,17 @@ class _ViewProductState extends State<ViewProduct> {
         _selectedCategoryId = '';
         if (_selectedCityId.isNotEmpty) {
           widget.productViewModel
-              .getFilterProductView(0, _selectedCityId)
+              .getFilterProductView(
+                  0, widget.productViewModel.idCityPageView ?? '')
               .then((_) {
-            setState(() {});
+            setState(() {
+              isSelectedChildCate = widget
+                  .indexViewModel.categoriesViewModel.lstCateChild.isNotEmpty;
+              if (!isSelectedChildCate) {
+                _selectedOptions['Hạng mục'] = 'Tất cả';
+                _selectedCategoryId = '';
+              }
+            });
           });
         } else {
           widget.productViewModel.getFilterProductView(0, '').then((_) {
@@ -147,6 +155,10 @@ class _ViewProductState extends State<ViewProduct> {
           setState(() {
             isSelectedChildCate = widget
                 .indexViewModel.categoriesViewModel.lstCateChild.isNotEmpty;
+            if (!isSelectedChildCate) {
+              _selectedOptions['Hạng mục'] = 'Tất cả';
+              _selectedCategoryId = '';
+            }
           });
         });
         widget.productViewModel

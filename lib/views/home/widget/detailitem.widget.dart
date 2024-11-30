@@ -207,7 +207,7 @@ class _DetailItemState extends State<DetailItem> {
             Padding(
               padding: const EdgeInsets.only(left: 8),
               child: Text(
-                '${widget.data.formattedPrice} / ${widget.data.dvt}',
+                '${widget.data.formattedPrice}₫ / ${widget.data.dvt}',
                 maxLines: 3,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
