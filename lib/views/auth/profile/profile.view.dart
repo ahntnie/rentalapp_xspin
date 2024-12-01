@@ -18,7 +18,6 @@ class ProfileView extends StatefulWidget {
 }
 
 class _ProfileViewState extends State<ProfileView> {
-  String version = '';
   final Uri _url = Uri.parse('https://thuethietbisukien.com');
   Future<void> openWeb() async {
     if (!await launchUrl(_url)) {
@@ -30,14 +29,6 @@ class _ProfileViewState extends State<ProfileView> {
   @override
   void initState() {
     super.initState();
-    _getAppVersion();
-  }
-
-  Future<void> _getAppVersion() async {
-    final packageInfo = await PackageInfo.fromPlatform();
-    setState(() {
-      version = 'Phiên bản ${packageInfo.version}';
-    });
   }
 
   @override
@@ -97,7 +88,7 @@ class _ProfileViewState extends State<ProfileView> {
                   onTap: () {},
                   icon: Icons.update,
                   color: Colors.orange,
-                  title: version,
+                  title: 'Phiên bản ${API.VERSION_APP}',
                 ),
               ],
             ),

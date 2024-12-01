@@ -34,4 +34,6 @@ class API {
   static const String FILTER_PRODUCT = '/getSanPhamTT';
 //POST
   static const String POST_MESSAGE = "/postTuVan";
+//version app
+  static const String VERSION_APP = '1.0.0';
 }

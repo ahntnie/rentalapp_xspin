@@ -60,17 +60,17 @@ class Products {
       dateCreate: json['NgayTao'] as String?,
     );
   }
-  String get formattedPrice {
-    final formatter = NumberFormat.currency(locale: 'vi_VN', symbol: '₫');
-    return formatter.format(price);
-  }
+  // String get formattedPrice {
+  //   final formatter = NumberFormat.currency(
+  //       locale: 'vi_VN', symbol: '₫', customPattern: '#,###');
+  //   return formatter.format(price);
+  // }
 
-  String get obfuscateName {
-    int length = nameUser!.length;
-    if (length <= 1) return nameUser!;
-    int firstHalfLength = (length / 2).ceil();
-    // int secondHalfLength = length - firstHalfLength;
-    return '*' * firstHalfLength + nameUser!.substring(firstHalfLength);
+  String get formattedPrice {
+    if (price == null) return '0';
+    final number = double.tryParse(price.toString()) ?? 0.0;
+    final formatter = NumberFormat('#,###');
+    return formatter.format(number);
   }
 
   // String get formattedPriceWeek {

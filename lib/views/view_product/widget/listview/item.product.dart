@@ -86,7 +86,7 @@ class _ItemProductState extends State<ItemProductList> {
                               ),
                               SizedBox(height: 5),
                               Text(
-                                '${widget.data.formattedPrice} / ${widget.data.dvt}',
+                                '${widget.data.formattedPrice}₫ / ${widget.data.dvt}',
                                 style: TextStyle(
                                   color: Colors.red,
                                   fontSize: AppFontSize.sizeSmall,

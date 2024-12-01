@@ -20,6 +20,9 @@ class ProductViewModel extends BaseViewModel {
   String searchQuery = '';
   Products? data;
   int? idCha;
+  String? idCityPage;
+  String? idCityPageView;
+
   int? idChaView;
   Categories? detailCate;
 
@@ -77,9 +80,9 @@ class ProductViewModel extends BaseViewModel {
     lstFilterProduct =
         await productRequest.getProductsByCategoryChild(idDanhMuc);
     // print('ID cấp cha ở mục con: ${idCha}');
-    print('ID cấp cha ở mục con: ${idChaView}');
-
-    print('Có ${lstFilterProduct.length} sản phẩm trong danh mục ${idDanhMuc}');
+    print('ID cấp cha ở mục con: ${idCha}');
+    print(
+        'Có ${lstFilterProduct.length} sản phẩm trong danh mục ${idDanhMuc} và id tỉnh là ${idCityPage}');
     setBusy(false);
     filterData();
     notifyListeners();
@@ -91,7 +94,8 @@ class ProductViewModel extends BaseViewModel {
         await productRequest.getProductsByCategoryChild(idDanhMuc);
     // print('ID cấp cha ở mục con: ${idCha}');
     print('ID cấp cha ở mục con: ${idChaView}');
-    print('Có ${lstFilterProduct.length} sản phẩm trong danh mục ${idDanhMuc}');
+    print(
+        'Có ${lstFilterProduct.length} sản phẩm trong danh mục ${idDanhMuc} và id tỉnh là ${idCityPageView}');
     setBusy(false);
     filterDataView();
     notifyListeners();
@@ -103,19 +107,26 @@ class ProductViewModel extends BaseViewModel {
     if (idDanhMuc == 0 && idCity.isEmpty) {
       lstFilterProduct = await productRequest.getLstProduct();
       idCha = 0;
-      print('Gọi getFilterProducts với idDanhMuc: $idDanhMuc, idCity: $idCity');
+      idCityPage = '';
+      print(
+          'Gọi getFilterProducts với idDanhMuc: $idDanhMuc, idCityPage: $idCityPage');
     } else if (idCity.isNotEmpty && idDanhMuc == 0) {
+      idCha = 0;
       lstFilterProduct = await productRequest.getProductFilterLocation(idCity);
-      print('Gọi getFilterProducts với idDanhMuc: $idDanhMuc, idCity: $idCity');
+      print(
+          'Gọi getFilterProducts với idDanhMuc: $idDanhMuc, idCityPage: $idCityPage');
+      idCityPage = idCity;
     } else if (idDanhMuc != 0 && idCity.isEmpty) {
       lstFilterProduct = await productRequest.getProductsByCategory(idDanhMuc);
-      idCha = idDanhMuc; // Cập nhật danh mục cha
-      print('Gọi getFilterProducts với idDanhMuc: $idDanhMuc, idCity: $idCity');
+      idCha = idDanhMuc;
+      idCityPage = '';
+      print('Gọi getFilterProducts với idCha: $idCha, idCityPage: $idCityPage');
     } else if (idDanhMuc != 0 && idCity.isNotEmpty) {
       lstFilterProduct =
           await productRequest.getProductFilter(idDanhMuc, idCity);
-      idCha = idDanhMuc; // Cập nhật danh mục cha
-      print('Gọi getFilterProducts với idDanhMuc: $idDanhMuc, idCity: $idCity');
+      idCha = idDanhMuc;
+      idCityPage = idCity;
+      print('Gọi getFilterProducts với idCha: $idCha, idCityPage: $idCityPage');
     }
 
     filterData();
@@ -138,10 +149,13 @@ class ProductViewModel extends BaseViewModel {
     if (idDanhMuc == 0 && idCity.isEmpty) {
       lstFilterProductView = await productRequest.getLstProduct();
       idChaView = 0;
+      idCityPageView = '';
       print(
           'Gọi getFilterProductView với idDanhMuc: $idDanhMuc, idCity: $idCity');
       print('data333 all -----> ${lstFilterProductView.length}');
     } else if (idCity.isNotEmpty && idDanhMuc == 0) {
+      idChaView = 0;
+      idCityPageView = idCity;
       lstFilterProductView =
           await productRequest.getProductFilterLocation(idCity);
       print(
@@ -151,6 +165,7 @@ class ProductViewModel extends BaseViewModel {
       lstFilterProductView =
           await productRequest.getProductsByCategory(idDanhMuc);
       idChaView = idDanhMuc;
+      idCityPageView = '';
       print(
           'Gọi getFilterProductView với idDanhMuc: $idDanhMuc, idCity: $idCity');
       print('data111 cate -----> ${lstFilterProductView.length}');
@@ -158,6 +173,8 @@ class ProductViewModel extends BaseViewModel {
       lstFilterProductView =
           await productRequest.getProductFilter(idDanhMuc, idCity);
       idChaView = idDanhMuc;
+      idCityPageView = idCity;
+
       print(
           'Gọi getFilterProductView với idDanhMuc: $idDanhMuc, idCity: $idCity');
       print('data444 filter -----> ${lstFilterProductView.length}');
